@@ -45,13 +45,13 @@ cd NewAgeSquad
 ### 3. Compilar
 
 ```bash
-javac Main2.java
+javac App.java
 ```
 
 ### 4. Executar
 
 ```bash
-java Main2
+java App
 ```
 
 ### 5. Saida gerada
@@ -63,3 +63,10 @@ pedido_NOME_DO_CLIENTE.txt
 ```
 
 com o resumo da nota fiscal.
+
+## Como rodar no Docker
+
+```bash
+docker build -t arcanecoffeshop:latest .
+docker run -it --rm -v "$PWD:/app" arcanecoffeshop:latest
+```

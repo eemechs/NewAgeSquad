@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -5,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-public class Main2 {
+public class App {
 
         private static final String CUPOM_VALIDO = "JAVA10";
 
@@ -191,11 +192,28 @@ public class Main2 {
 
                 System.out.println("\n------ " + title + " ------");
 
+                int maxLabelLength = 0;
+
+                for (int i = 0; i < options.length; i++) {
+
+                        String label = (i + 1) + " - " + options[i].name;
+
+                        if (label.length() > maxLabelLength) {
+
+                                maxLabelLength = label.length();
+                        }
+                }
+
+                int dotsPadding = 6;
+
                 for (int i = 0; i < options.length; i++) {
 
                         ProductOption option = options[i];
+                        String label = (i + 1) + " - " + option.name;
+                        int dotsCount = Math.max(2, (maxLabelLength + dotsPadding) - label.length());
+                        String dots = ".".repeat(dotsCount);
 
-                        System.out.printf("%d - %s ....... R$ %.2f%n", i + 1, option.name, option.price);
+                        System.out.printf("%s %s R$ %.2f%n", label, dots, option.price);
                 }
         }
 
@@ -354,9 +372,20 @@ public class Main2 {
                         double totalFinal
         ) {
 
-                String fileName = "pedido_" + nomeCliente + ".txt";
+                String safeNome = nomeCliente == null ? "" : nomeCliente.trim();
 
-                try (FileWriter arquivo = new FileWriter(fileName)) {
+                if (safeNome.isEmpty()) {
+
+                        safeNome = "cliente";
+                }
+
+                safeNome = safeNome
+                                .replaceAll("[\\\\/]+", "_")
+                                .replaceAll("\\s+", "_");
+
+                File outputFile = new File("pedido_" + safeNome + ".txt");
+
+                try (FileWriter arquivo = new FileWriter(outputFile)) {
 
                         arquivo.write(
                                         "======= NOTA FISCAL =======\n"
@@ -370,6 +399,7 @@ public class Main2 {
                         );
 
                         System.out.println("\nArquivo TXT salvo com sucesso!");
+                        System.out.println("Local: " + outputFile.getPath());
 
                 } catch (IOException e) {
 
