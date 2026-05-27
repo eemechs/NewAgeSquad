@@ -8,21 +8,21 @@ import java.util.Scanner;
 
 public class App {
 
-        private static final String CUPOM_VALIDO = "JAVA10";
+        static final String CUPOM_VALIDO = "JAVA10";
 
-        private static final ProductOption[] CAFES = {
+        static final ProductOption[] CAFES = {
                 new ProductOption("Expresso de Zaun", 5.00),
                 new ProductOption("Capputeemo", 8.00),
                 new ProductOption("Latte Hextech", 10.00)
         };
 
-        private static final ProductOption[] DOCES = {
+        static final ProductOption[] DOCES = {
                 new ProductOption("Braum-nie", 7.00),
                 new ProductOption("Heimer-cake", 12.00),
                 new ProductOption("Cupcake da Caitlyn", 6.00)
         };
 
-        private static final ProductOption[] BEBIDAS_GELADAS = {
+        static final ProductOption[] BEBIDAS_GELADAS = {
                 new ProductOption("Frappushimmer", 14.00),
                 new ProductOption("Piltover", 9.00),
                 new ProductOption("Ishake", 15.00)
@@ -89,6 +89,20 @@ public class App {
     }
 
     public static void main(String[] args) {
+
+        if (HttpServerApp.shouldStartHttpServer(args)) {
+
+            try {
+
+                HttpServerApp.startHttpServer();
+
+            } catch (IOException e) {
+
+                System.out.println("Erro ao iniciar o servidor HTTP.");
+            }
+
+            return;
+        }
 
         Scanner sc = new Scanner(System.in);
         int opcao = 0;
@@ -347,7 +361,7 @@ public class App {
                 System.out.println("\nObrigado pela preferência!");
         }
 
-        private static String buildOrderLines(LinkedHashMap<String, OrderItem> orderItems) {
+        static String buildOrderLines(LinkedHashMap<String, OrderItem> orderItems) {
 
                 if (orderItems.isEmpty()) {
 
@@ -364,7 +378,7 @@ public class App {
                 return builder.toString();
         }
 
-        private static void saveOrderToFile(
+        static File saveOrderToFile(
                         String nomeCliente,
                         String pedidosParaImpressao,
                         double total,
@@ -384,19 +398,11 @@ public class App {
                                 .replaceAll("\\s+", "_");
 
                 File outputFile = new File("pedido_" + safeNome + ".txt");
+                String conteudoArquivo = buildReceiptText(nomeCliente, pedidosParaImpressao, total, desconto, totalFinal);
 
                 try (FileWriter arquivo = new FileWriter(outputFile)) {
 
-                        arquivo.write(
-                                        "======= NOTA FISCAL =======\n"
-                                                        + "Cliente: " + nomeCliente + "\n\n"
-                                                        + "Itens do Pedido:\n"
-                                                        + pedidosParaImpressao
-                                                        + "\n"
-                                                        + String.format("Subtotal: R$ %.2f\n", total)
-                                                        + String.format("Desconto: R$ %.2f\n", desconto)
-                                                        + String.format("Total Final: R$ %.2f", totalFinal)
-                        );
+                        arquivo.write(conteudoArquivo);
 
                         System.out.println("\nArquivo TXT salvo com sucesso!");
                         System.out.println("Local: " + outputFile.getPath());
@@ -404,7 +410,28 @@ public class App {
                 } catch (IOException e) {
 
                         System.out.println("Erro ao salvar arquivo!");
+                        return null;
                 }
+
+                return outputFile;
+        }
+
+        static String buildReceiptText(
+                String nomeCliente,
+                String pedidosParaImpressao,
+                double total,
+                double desconto,
+                double totalFinal
+        ) {
+
+                return "======= NOTA FISCAL =======\n"
+                                + "Cliente: " + nomeCliente + "\n\n"
+                                + "Itens do Pedido:\n"
+                                + pedidosParaImpressao
+                                + "\n"
+                                + String.format("Subtotal: R$ %.2f\n", total)
+                                + String.format("Desconto: R$ %.2f\n", desconto)
+                                + String.format("Total Final: R$ %.2f", totalFinal);
         }
 
     private static int readInt(Scanner scanner) {
@@ -455,7 +482,7 @@ public class App {
         }
     }
 
-    private static void addOrUpdateOrderItem(
+    static void addOrUpdateOrderItem(
             Map<String, OrderItem> orderItems,
             String name,
             double price,
@@ -473,7 +500,7 @@ public class App {
         orderItems.put(name, new OrderItem(name, price, quantity));
     }
 
-    private static double calcularTotal(
+    static double calcularTotal(
             Map<String, OrderItem> orderItems
     ) {
 

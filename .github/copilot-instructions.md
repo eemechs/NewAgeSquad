@@ -2,11 +2,11 @@
 
 ## Build / run
 - Requires JDK 17+ (javac/java available in PATH).
-- Compile: `javac App.java`
+- Compile: `javac App.java HttpServerApp.java`
 - Run: `java App`
 
 ## High-level architecture
-- Single entrypoint `App` implements the CLI loop; menu options dispatch to helper methods for add/view/cancel/finalize flows.
+- `App` implements the CLI loop; `HttpServerApp` hosts the HTTP server mode.
 - Product catalog is defined as static `ProductOption[]` arrays (cafes, doces, bebidas geladas).
 - Order state is kept in a `LinkedHashMap<String, OrderItem>` keyed by product name to preserve insertion order.
 - Finalization prints the receipt and writes `pedido_<nomeCliente>.txt` via `FileWriter`.

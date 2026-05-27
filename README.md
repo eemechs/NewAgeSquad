@@ -45,13 +45,36 @@ cd NewAgeSquad
 ### 3. Compilar
 
 ```bash
-javac App.java
+javac App.java HttpServerApp.java
 ```
 
 ### 4. Executar
 
+#### Modo console
+
 ```bash
 java App
+```
+
+#### Modo HTTP (sem framework)
+
+```bash
+java HttpServerApp
+```
+
+Acesse no navegador:
+
+```
+http://localhost:8080
+```
+
+Para usar outra porta, defina a variavel `PORT` antes de executar.
+
+## Como rodar no Docker
+
+```bash
+docker build -t arcanecoffeshop:latest .
+docker run -it --rm -p 8080:8080 -v "$PWD:/app" arcanecoffeshop:latest
 ```
 
 ### 5. Saida gerada
@@ -63,10 +86,3 @@ pedido_NOME_DO_CLIENTE.txt
 ```
 
 com o resumo da nota fiscal.
-
-## Como rodar no Docker
-
-```bash
-docker build -t arcanecoffeshop:latest .
-docker run -it --rm -v "$PWD:/app" arcanecoffeshop:latest
-```
